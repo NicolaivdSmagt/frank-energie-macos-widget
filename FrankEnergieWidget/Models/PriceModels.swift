@@ -149,11 +149,12 @@ struct PriceSnapshot: Sendable {
         }
     }
 
-    /// The price range for scaling the chart
+    /// The price range for scaling the chart, with 3 cent margin on each side
     var priceRange: ClosedRange<Double> {
+        let margin = 0.03
         let prices = electricityPrices.map { $0.price(for: priceType) }
-        let minPrice = min(0, prices.min() ?? 0)
-        let maxPrice = prices.max() ?? 0.30
+        let minPrice = (prices.min() ?? 0) - margin
+        let maxPrice = (prices.max() ?? 0.30) + margin
         return minPrice...maxPrice
     }
 

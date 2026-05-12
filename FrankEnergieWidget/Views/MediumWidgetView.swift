@@ -12,7 +12,7 @@ struct MediumWidgetView: View {
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
-        VStack(spacing: 4) {
+        VStack(spacing: 2) {
             // Header: title + toggle buttons
             headerView
 
@@ -28,7 +28,8 @@ struct MediumWidgetView: View {
             footerView
         }
         .padding(.horizontal, 12)
-        .padding(.vertical, 8)
+        .padding(.top, 6)
+        .padding(.bottom, 4)
         .containerBackground(for: .widget) {
             WidgetTheme.background(for: colorScheme)
         }
@@ -80,6 +81,23 @@ struct MediumWidgetView: View {
 
     private var footerView: some View {
         HStack(spacing: 12) {
+            // Current electricity price
+            if let current = snapshot.currentElectricityPrice {
+                HStack(spacing: 4) {
+                    Circle()
+                        .fill(WidgetTheme.priceLevel(
+                            current: current.price(for: snapshot.priceType),
+                            range: snapshot.priceRange
+                        ))
+                        .frame(width: 6, height: 6)
+                    Text("Nu: \(PriceFormatter.formatWithEuro(current.price(for: snapshot.priceType))) /kWh")
+                        .font(.system(size: 9, weight: .semibold))
+                        .foregroundColor(WidgetTheme.primaryText(for: colorScheme))
+                }
+            }
+
+            Spacer()
+
             // Average electricity price
             HStack(spacing: 4) {
                 Circle()
@@ -88,31 +106,6 @@ struct MediumWidgetView: View {
                 Text("Gem. \(snapshot.formattedAveragePrice) /kWh")
                     .font(.system(size: 9, weight: .regular))
                     .foregroundColor(WidgetTheme.secondaryText(for: colorScheme))
-            }
-
-            Spacer()
-
-            // Gas prices
-            if let gasBefore = snapshot.gasPriceBefore6 {
-                HStack(spacing: 2) {
-                    Image(systemName: "flame.fill")
-                        .font(.system(size: 7))
-                        .foregroundColor(WidgetTheme.mutedText(for: colorScheme))
-                    Text("< 06: \(PriceFormatter.format(gasBefore.price(for: snapshot.priceType)))")
-                        .font(.system(size: 9, weight: .regular))
-                        .foregroundColor(WidgetTheme.secondaryText(for: colorScheme))
-                }
-            }
-
-            if let gasAfter = snapshot.gasPriceAfter6 {
-                HStack(spacing: 2) {
-                    Image(systemName: "flame.fill")
-                        .font(.system(size: 7))
-                        .foregroundColor(WidgetTheme.mutedText(for: colorScheme))
-                    Text("> 06: \(PriceFormatter.format(gasAfter.price(for: snapshot.priceType)))")
-                        .font(.system(size: 9, weight: .regular))
-                        .foregroundColor(WidgetTheme.secondaryText(for: colorScheme))
-                }
             }
         }
     }

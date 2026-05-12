@@ -15,9 +15,9 @@ settings:
     MACOSX_DEPLOYMENT_TARGET: "15.0"
     MARKETING_VERSION: "1.0.0"
     CURRENT_PROJECT_VERSION: "1"
-    DEVELOPMENT_TEAM: ""
-    CODE_SIGN_IDENTITY: "-"
-    CODE_SIGN_STYLE: Manual
+    DEVELOPMENT_TEAM: "9F2JYS26P3"
+    CODE_SIGN_IDENTITY: "Apple Development"
+    CODE_SIGN_STYLE: Automatic
 
 targets:
   FrankEnergieApp:
@@ -33,6 +33,8 @@ targets:
         PRODUCT_NAME: "Frank Energie Widget"
         PRODUCT_MODULE_NAME: FrankEnergieApp
         LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks"
+    entitlements:
+      path: FrankEnergieApp/FrankEnergieApp.entitlements
     dependencies:
       - target: FrankEnergieWidgetExtension
 

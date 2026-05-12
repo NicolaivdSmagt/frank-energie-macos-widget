@@ -27,16 +27,13 @@ struct StepLineChartView: View {
         }
 
         var ticks: [Double] = []
+        // Start from the nearest step below the lower bound
         var value = (priceRange.lowerBound / step).rounded(.down) * step
-        while value <= priceRange.upperBound {
-            if value >= priceRange.lowerBound {
-                ticks.append(value)
-            }
+        // End at the nearest step above the upper bound
+        let end = (priceRange.upperBound / step).rounded(.up) * step
+        while value <= end {
+            ticks.append(value)
             value += step
-        }
-        // Always include a tick at or above the max
-        if let last = ticks.last, last < priceRange.upperBound {
-            ticks.append(last + step)
         }
         return ticks
     }
@@ -104,8 +101,8 @@ struct StepLineChartView: View {
     private func chartRect(in size: CGSize) -> CGRect {
         let leftMargin: CGFloat = 48  // Space for Y-axis labels
         let rightMargin: CGFloat = 8
-        let topMargin: CGFloat = 4
-        let bottomMargin: CGFloat = 20  // Space for X-axis labels
+        let topMargin: CGFloat = 10  // Space between header text and top Y-axis label
+        let bottomMargin: CGFloat = 24  // Space for X-axis labels (below chart)
 
         return CGRect(
             x: leftMargin,
