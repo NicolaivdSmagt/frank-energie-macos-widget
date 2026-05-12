@@ -1,0 +1,79 @@
+# ABOUTME: XcodeGen project specification for the Frank Energie macOS desktop widget.
+# ABOUTME: Defines the host app and widget extension targets, build settings, and dependencies.
+name: FrankEnergieWidget
+options:
+  bundleIdPrefix: nl.frankenergie.widget
+  deploymentTarget:
+    macOS: "15.0"
+  xcodeVersion: "16.0"
+  generateEmptyDirectories: true
+  groupSortPosition: top
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    MACOSX_DEPLOYMENT_TARGET: "15.0"
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_IDENTITY: "-"
+    CODE_SIGN_STYLE: Manual
+    PRODUCT_NAME: "Frank Energie Widget"
+
+targets:
+  FrankEnergieApp:
+    type: application
+    platform: macOS
+    sources:
+      - path: FrankEnergieApp
+      - path: Shared
+    settings:
+      base:
+        INFOPLIST_FILE: FrankEnergieApp/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: nl.frankenergie.widget.app
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks"
+    dependencies:
+      - target: FrankEnergieWidgetExtension
+
+  FrankEnergieWidgetExtension:
+    type: app-extension
+    platform: macOS
+    sources:
+      - path: FrankEnergieWidget
+      - path: Shared
+    settings:
+      base:
+        INFOPLIST_FILE: FrankEnergieWidget/Info.plist
+        PRODUCT_BUNDLE_IDENTIFIER: nl.frankenergie.widget.app.widget
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks"
+        SKIP_INSTALL: YES
+    entitlements:
+      path: FrankEnergieWidget/FrankEnergieWidget.entitlements
+
+  FrankEnergieWidgetTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: Tests/FrankEnergieWidgetTests
+      - path: FrankEnergieWidget
+      - path: Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: nl.frankenergie.widget.tests
+    dependencies:
+      - target: FrankEnergieApp
+
+schemes:
+  FrankEnergieWidget:
+    build:
+      targets:
+        FrankEnergieApp: all
+        FrankEnergieWidgetExtension: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - FrankEnergieWidgetTests
+    archive:
+      config: Release

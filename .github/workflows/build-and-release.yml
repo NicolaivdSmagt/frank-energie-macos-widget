@@ -1,0 +1,62 @@
+# ABOUTME: GitHub Actions workflow to build the Frank Energie Widget for macOS.
+# ABOUTME: Triggers on version tags, builds a universal binary, and attaches it to a GitHub Release.
+
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode Project
+        run: xcodegen generate
+
+      - name: Build Universal Binary
+        run: |
+          xcodebuild archive \
+            -scheme FrankEnergieWidget \
+            -configuration Release \
+            -archivePath build/FrankEnergieWidget-arm64.xcarchive \
+            -destination "generic/platform=macOS" \
+            ARCHS="arm64 x86_64" \
+            ONLY_ACTIVE_ARCH=NO \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            DEVELOPMENT_TEAM="" \
+            SKIP_INSTALL=NO \
+            BUILD_LIBRARY_FOR_DISTRIBUTION=YES
+
+      - name: Extract App Bundle
+        run: |
+          cp -R "build/FrankEnergieWidget-arm64.xcarchive/Products/Applications/Frank Energie Widget.app" "Frank Energie Widget.app"
+
+      - name: Create ZIP
+        run: |
+          ditto -c -k --sequesterRsrc --keepParent "Frank Energie Widget.app" "FrankEnergieWidget-macOS-universal.zip"
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: FrankEnergieWidget-macOS
+          path: "FrankEnergieWidget-macOS-universal.zip"
+
+      - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: "FrankEnergieWidget-macOS-universal.zip"
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
