@@ -6,8 +6,8 @@ import WidgetKit
 
 /// Intent to toggle the price type between market and all-in
 struct TogglePriceTypeIntent: AppIntent {
-    static var title: LocalizedStringResource = "Toggle Price Type"
-    static var description = IntentDescription("Switch between market price and all-in price")
+    static let title: LocalizedStringResource = "Toggle Price Type"
+    static let description: IntentDescription = "Switch between market price and all-in price"
 
     func perform() async throws -> some IntentResult {
         let current = WidgetPreferences.shared.priceType
@@ -20,8 +20,8 @@ struct TogglePriceTypeIntent: AppIntent {
 
 /// Intent to toggle the resolution between hourly and quarter-hourly
 struct ToggleResolutionIntent: AppIntent {
-    static var title: LocalizedStringResource = "Toggle Resolution"
-    static var description = IntentDescription("Switch between hourly and quarter-hourly prices")
+    static let title: LocalizedStringResource = "Toggle Resolution"
+    static let description: IntentDescription = "Switch between hourly and quarter-hourly prices"
 
     func perform() async throws -> some IntentResult {
         let current = WidgetPreferences.shared.resolution

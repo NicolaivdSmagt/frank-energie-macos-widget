@@ -3,6 +3,7 @@
 
 import SwiftUI
 import WidgetKit
+import AppIntents
 
 /// The medium widget view showing the full price chart with toggles and summary
 struct MediumWidgetView: View {
