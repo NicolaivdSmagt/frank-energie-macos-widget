@@ -2,7 +2,6 @@
 // ABOUTME: Verifies correct parsing of the Frank Energie API response format.
 
 import XCTest
-@testable import FrankEnergieWidgetExtension
 
 final class PriceModelsTests: XCTestCase {
 

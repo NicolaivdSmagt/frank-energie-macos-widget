@@ -2,7 +2,6 @@
 // ABOUTME: Verifies placeholder generation, snapshot creation, and refresh scheduling.
 
 import XCTest
-@testable import FrankEnergieWidgetExtension
 
 final class TimelineProviderTests: XCTestCase {
 

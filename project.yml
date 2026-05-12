@@ -18,7 +18,6 @@ settings:
     DEVELOPMENT_TEAM: ""
     CODE_SIGN_IDENTITY: "-"
     CODE_SIGN_STYLE: Manual
-    PRODUCT_NAME: "Frank Energie Widget"
 
 targets:
   FrankEnergieApp:
@@ -31,6 +30,8 @@ targets:
       base:
         INFOPLIST_FILE: FrankEnergieApp/Info.plist
         PRODUCT_BUNDLE_IDENTIFIER: nl.frankenergie.widget.app
+        PRODUCT_NAME: "Frank Energie Widget"
+        PRODUCT_MODULE_NAME: FrankEnergieApp
         LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks"
     dependencies:
       - target: FrankEnergieWidgetExtension
@@ -45,6 +46,8 @@ targets:
       base:
         INFOPLIST_FILE: FrankEnergieWidget/Info.plist
         PRODUCT_BUNDLE_IDENTIFIER: nl.frankenergie.widget.app.widget
+        PRODUCT_NAME: "FrankEnergieWidgetExtension"
+        PRODUCT_MODULE_NAME: FrankEnergieWidgetExtension
         LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks @executable_path/../../../../Frameworks"
         SKIP_INSTALL: YES
     entitlements:
@@ -56,12 +59,18 @@ targets:
     sources:
       - path: Tests/FrankEnergieWidgetTests
       - path: FrankEnergieWidget
+        excludes:
+          - "FrankEnergieWidgetBundle.swift"
       - path: Shared
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: nl.frankenergie.widget.tests
+        PRODUCT_MODULE_NAME: FrankEnergieWidgetTests
     dependencies:
       - target: FrankEnergieApp
+      - framework: WidgetKit.framework
+        embed: false
+      - sdk: AppIntents.framework
 
 schemes:
   FrankEnergieWidget:

@@ -2,7 +2,6 @@
 // ABOUTME: Verifies the API endpoint is reachable and returns correctly structured data.
 
 import XCTest
-@testable import FrankEnergieWidgetExtension
 
 final class FrankEnergieAPITests: XCTestCase {
 
