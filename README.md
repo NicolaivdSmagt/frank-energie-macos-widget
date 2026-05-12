@@ -46,8 +46,8 @@ Requires:
 brew install xcodegen
 
 # Clone and build
-git clone https://github.com/YOUR_USERNAME/frank_energie_widget.git
-cd frank_energie_widget
+git clone https://github.com/NicolaivdSmagt/frank-energie-macos-widget.git
+cd frank-energie-macos-widget
 xcodegen generate
 xcodebuild -scheme FrankEnergieWidget -configuration Release build
 ```
