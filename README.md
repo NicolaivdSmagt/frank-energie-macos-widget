@@ -4,75 +4,77 @@ A native macOS desktop widget that displays real-time dynamic electricity prices
 
 ## Features
 
-- **Step-line chart** showing 24-hour electricity prices
+- **Step-line chart** showing 24-hour electricity prices with dynamic scaling
 - **Interactive toggles**: switch between Marktprijs/All-in prijs and Per uur/Per kwartier
 - **Current time marker** showing where you are in the day
-- **Small widget**: shows current electricity price at a glance with color-coded price level
-- **Medium widget**: full chart with average price and gas price summary
+- **Current price display** with color-coded indicator (green=cheap, orange=normal, red=expensive)
+- **Small widget**: current electricity price at a glance
+- **Medium widget**: full chart with current and average price
 - **Dark mode primary** with automatic light mode support
 - **Auto-refresh** every 15 minutes
 
 ## Installation
 
-### Download (recommended)
+Building from source is required because macOS only registers WidgetKit extensions that are properly code-signed with a development certificate.
 
-1. Download the latest `.zip` from [Releases](../../releases)
-2. Unzip the file
-3. Move `Frank Energie Widget.app` to `/Applications`
-4. **Important**: Right-click the app and select "Open" (bypasses Gatekeeper since the app is not notarized)
-5. The app will open briefly showing setup instructions - you can close it
-6. Right-click your desktop > "Edit Widgets..." > search for "Frank Energie"
-7. Drag the widget (Small or Medium) to your desktop
+### Requirements
 
-> **Note**: Since this app is not signed with an Apple Developer certificate, macOS will warn you on first launch. This is safe to dismiss - the source code is fully open and the app only makes network requests to the Frank Energie public price API.
-
-### Alternative Gatekeeper bypass
-
-If right-click > Open doesn't work, run this in Terminal:
-
-```bash
-xattr -cr "/Applications/Frank Energie Widget.app"
-```
-
-## Build from Source
-
-Requires:
-- macOS 15.0+
-- Xcode 16.0+
+- macOS 15 (Sequoia) or later
+- Xcode 16.0+ (required for code signing)
+- An Apple ID (free account, no paid developer program needed)
 - [XcodeGen](https://github.com/yonaskolb/XcodeGen)
+
+### Steps
 
 ```bash
 # Install XcodeGen
 brew install xcodegen
 
-# Clone and build
+# Clone the repo
 git clone https://github.com/NicolaivdSmagt/frank-energie-macos-widget.git
 cd frank-energie-macos-widget
+
+# Generate the Xcode project
 xcodegen generate
-xcodebuild -scheme FrankEnergieWidget -configuration Release build
+
+# Open in Xcode
+open FrankEnergieWidget.xcodeproj
 ```
+
+Then in Xcode:
+
+1. Select the **FrankEnergieWidget** project in the navigator
+2. For each target (FrankEnergieApp, FrankEnergieWidgetExtension):
+   - Go to **Signing & Capabilities**
+   - Check **Automatically manage signing**
+   - Select your **Personal Team** from the dropdown
+3. Press **Cmd+R** (or Product > Run) to build and launch
+
+After the app launches:
+
+4. Right-click your desktop > **Edit Widgets...** > search for **"Frank Energie"**
+5. Drag the widget (Small or Medium) to your desktop
+
+### Why can't I just download a pre-built binary?
+
+macOS requires widget extensions to be code-signed with a valid development certificate to register with the system. Pre-built binaries from GitHub Releases are ad-hoc signed and won't show up in the widget gallery. You need to build from source with your own Apple ID to get a local signing certificate.
 
 ## How It Works
 
-The widget fetches electricity and gas prices from the Frank Energie public GraphQL API (`frank-graphql-prod.graphcdn.app`). No authentication or Frank Energie account is required - market prices are publicly available.
+The widget fetches electricity prices from the Frank Energie public GraphQL API (`frank-graphql-prod.graphcdn.app`). No authentication or Frank Energie account is required - market prices are publicly available.
 
 ### Data Source
 
 - **Electricity prices**: Updated hourly or quarter-hourly, available for today (and tomorrow after ~15:00 CET)
-- **Gas prices**: Updated daily, split into before/after 06:00
-- **Refresh interval**: Every 15 minutes
+- **Refresh interval**: Every 15 minutes (WidgetKit may refresh less frequently to save battery)
+- **API calls**: ~96 per day maximum (one per 15-minute refresh)
 
 ### Widget Sizes
 
 | Size | Content |
 |------|---------|
-| Small | Current electricity price with color indicator (green=cheap, orange=normal, red=expensive) |
-| Medium | Step-line chart + toggles + average electricity price + gas prices |
-
-## Requirements
-
-- macOS 15 (Sequoia) or later
-- Network connection (to fetch prices from Frank Energie API)
+| Small | Current electricity price with color-coded price level indicator |
+| Medium | Step-line chart + interactive toggles + current price + average price |
 
 ## Privacy
 
