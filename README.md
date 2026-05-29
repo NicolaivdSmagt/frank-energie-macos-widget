@@ -17,6 +17,8 @@ A native macOS desktop widget that displays real-time dynamic electricity prices
 
 Building from source is required because macOS only registers WidgetKit extensions that are properly code-signed with a development certificate.
 
+> **Building it? See [AGENTS.md](AGENTS.md)** for the exact, verified build/install sequence and the signing gotchas (the widget only registers when App-Sandboxed — empty entitlements or ad-hoc signing make it silently disappear from the gallery).
+
 ### Requirements
 
 - macOS 15 (Sequoia) or later
