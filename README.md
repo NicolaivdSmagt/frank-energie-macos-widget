@@ -36,7 +36,12 @@ brew install xcodegen
 git clone https://github.com/NicolaivdSmagt/frank-energie-macos-widget.git
 cd frank-energie-macos-widget
 
-# Generate the Xcode project
+# Set your Apple Developer Team ID (find it in Xcode > Settings > Accounts).
+# project.yml reads it from the environment so it never gets committed.
+cp .env.example .env        # then edit .env and set DEVELOPMENT_TEAM
+
+# Generate the Xcode project (loads DEVELOPMENT_TEAM from .env)
+set -a; source .env; set +a
 xcodegen generate
 
 # Open in Xcode
@@ -45,17 +50,23 @@ open FrankEnergieWidget.xcodeproj
 
 Then in Xcode:
 
-1. Select the **FrankEnergieWidget** project in the navigator
-2. For each target (FrankEnergieApp, FrankEnergieWidgetExtension):
-   - Go to **Signing & Capabilities**
-   - Check **Automatically manage signing**
-   - Select your **Personal Team** from the dropdown
-3. Press **Cmd+R** (or Product > Run) to build and launch
+1. Select the **FrankEnergieWidget** scheme in the toolbar
+2. Press **Cmd+R** (or Product > Run) to build and launch
+
+Signing (automatic management, your Personal Team, App Sandbox) is already
+configured in `project.yml`, so no manual Signing & Capabilities changes are needed.
+On the first build Xcode creates your free development certificate automatically.
 
 After the app launches:
 
-4. Right-click your desktop > **Edit Widgets...** > search for **"Frank Energie"**
-5. Drag the widget (Small or Medium) to your desktop
+3. Right-click your desktop > **Edit Widgets...** > search for **"Frank Energie"**
+4. Drag the widget (Small or Medium) to your desktop
+
+> **The widget only appears if its extension is App-Sandboxed.** This is already set
+> in `project.yml` and the `.entitlements` files. Note that `xcodegen generate` can
+> strip the entitlements back to empty — if the widget stops showing up after a
+> regenerate, see [AGENTS.md](AGENTS.md) for the one-line restore and full
+> troubleshooting.
 
 ### Why can't I just download a pre-built binary?
 
