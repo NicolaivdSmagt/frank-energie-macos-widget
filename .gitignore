@@ -24,3 +24,6 @@ Packages/
 # IDE
 .idea/
 .vscode/
+
+# Local secrets / per-developer config (Team ID etc.) — see .env.example
+.env

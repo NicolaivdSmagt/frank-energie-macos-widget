@@ -11,12 +11,14 @@ ordering and the signing details matter.
 - **XcodeGen**: `brew install xcodegen`
 - An Apple ID signed into **Xcode > Settings > Accounts** with a Personal Team.
   Find your 10-char Team ID in **Xcode > Settings > Accounts** (select the team) or
-  with `defaults read com.apple.dt.Xcode` after a first GUI build. Export it before
-  generating the project — `project.yml` reads it from the `DEVELOPMENT_TEAM`
-  environment variable (it is intentionally NOT committed):
+  with `defaults read com.apple.dt.Xcode` after a first GUI build. `project.yml`
+  reads it from the `DEVELOPMENT_TEAM` environment variable (it is intentionally NOT
+  committed). Put it in a local `.env` file (gitignored) — copy the template and
+  fill in your Team ID:
   ```bash
-  export DEVELOPMENT_TEAM=XXXXXXXXXX
+  cp .env.example .env   # then edit .env and set DEVELOPMENT_TEAM
   ```
+  `.env` is loaded into the environment in step 1 below.
 
 ## Critical signing facts (why a naive build fails to show the widget)
 
@@ -40,8 +42,8 @@ Do NOT revert the entitlements files to `<dict/>` or re-enable ad-hoc signing.
 ## Build + install (the working sequence)
 
 ```bash
-# 1. Generate the Xcode project from project.yml (DEVELOPMENT_TEAM must be exported)
-export DEVELOPMENT_TEAM=XXXXXXXXXX
+# 1. Generate the Xcode project from project.yml (loads DEVELOPMENT_TEAM from .env)
+set -a; source .env; set +a
 xcodegen generate
 
 # 2. Build (signs with the Personal Team; -allowProvisioningUpdates lets the
@@ -77,6 +79,12 @@ Then add it: right-click desktop > **Edit Widgets...** > search **"Frank Energie
 
 ## Troubleshooting
 
+- **`xcodegen generate` wipes the entitlements to `<dict/>`**: because
+  `ENABLE_APP_SANDBOX: YES` is set, XcodeGen rewrites the `.entitlements` files and
+  drops the `com.apple.security.*` keys. This silently un-sandboxes the widget so it
+  stops registering. After every `xcodegen generate`, verify the entitlements still
+  contain `com.apple.security.app-sandbox`; if not, restore them:
+  `git checkout HEAD -- FrankEnergieApp/FrankEnergieApp.entitlements FrankEnergieWidget/FrankEnergieWidget.entitlements`
 - **`pluginkit` says `(no matches)`**: the extension isn't sandboxed or was ad-hoc
   signed. Confirm with:
   `codesign -d --entitlements - "/Applications/Frank Energie Widget.app/Contents/PlugIns/FrankEnergieWidgetExtension.appex"` —
