@@ -36,8 +36,9 @@ brew install xcodegen
 git clone https://github.com/NicolaivdSmagt/frank-energie-macos-widget.git
 cd frank-energie-macos-widget
 
-# Set your Apple Developer Team ID (find it in Xcode > Settings > Accounts).
-# project.yml reads it from the environment so it never gets committed.
+# Set your Apple Developer Team ID. project.yml reads it from the
+# environment so it never gets committed. Find your Team ID at
+# https://developer.apple.com/account (Membership details), then:
 cp .env.example .env        # then edit .env and set DEVELOPMENT_TEAM
 
 # Generate the Xcode project (loads DEVELOPMENT_TEAM from .env)

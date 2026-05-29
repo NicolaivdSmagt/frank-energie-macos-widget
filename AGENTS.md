@@ -10,11 +10,10 @@ ordering and the signing details matter.
   `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer`
 - **XcodeGen**: `brew install xcodegen`
 - An Apple ID signed into **Xcode > Settings > Accounts** with a Personal Team.
-  Find your 10-char Team ID in **Xcode > Settings > Accounts** (select the team) or
-  with `defaults read com.apple.dt.Xcode` after a first GUI build. `project.yml`
-  reads it from the `DEVELOPMENT_TEAM` environment variable (it is intentionally NOT
-  committed). Put it in a local `.env` file (gitignored) — copy the template and
-  fill in your Team ID:
+  Find your 10-char Team ID at https://developer.apple.com/account (Membership
+  details), signed in with the same Apple ID. `project.yml` reads it from the
+  `DEVELOPMENT_TEAM` environment variable (it is intentionally NOT committed). Put it
+  in a local `.env` file (gitignored) — copy the template and fill in your Team ID:
   ```bash
   cp .env.example .env   # then edit .env and set DEVELOPMENT_TEAM
   ```
